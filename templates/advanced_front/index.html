@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeGrabber | Premium Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Icon Set for Premium Look -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body class="dark-mode">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="ri-youtube-line" style="font-size: 28px; color: var(--accent);"></i>
+            <h2>TubeGrabber</h2>
+        </div>
+        
+        <div class="nav-section-title">Menu</div>
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active" id="tab-home">
+                <i class="ri-home-4-line"></i> Home
+            </a>
+            <a href="#" class="nav-item" id="tab-downloads">
+                <i class="ri-download-cloud-2-line"></i> Active
+                <span class="badge hidden" id="activeBadge">0</span>
+            </a>
+            
+            <div class="nav-section-title mt-4">Categories</div>
+            <a href="#" class="nav-item" id="tab-audio">
+                <i class="ri-music-2-line"></i> Audio
+            </a>
+            <a href="#" class="nav-item" id="tab-video">
+                <i class="ri-film-line"></i> Video
+            </a>
+            <a href="#" class="nav-item" id="tab-completed">
+                <i class="ri-check-double-line"></i> Completed
+            </a>
+            <a href="#" class="nav-item" id="tab-failed">
+                <i class="ri-error-warning-line"></i> Failed
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <a href="#" class="nav-item">
+                <i class="ri-settings-3-line"></i> Settings
+            </a>
+            <a href="#" class="nav-item" id="themeToggle">
+                <i class="ri-moon-line"></i> Dark Mode
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        
+        <!-- View: HOME -->
+        <section id="view-home" class="view active-view">
+            <!-- Header Tagline -->
+            <header class="hero-header fade-in">
+                <h1>Download YouTube Videos Instantly 🎬</h1>
+                <p>Fast • Free • High Quality</p>
+            </header>
+
+            <!-- Quick Mode Toggle -->
+            <div class="quick-mode-container fade-in" style="animation-delay: 0.1s;">
+                <label class="switch-wrap">
+                    <input type="checkbox" id="quickModeToggle">
+                    <div class="switch"></div>
+                    <span class="switch-label">⚡ Quick Mode (Auto MP3)</span>
+                </label>
+            </div>
+
+            <!-- Smart Input Area (Drag & Drop) -->
+            <div class="smart-input-area fade-in" id="dropZone" style="animation-delay: 0.2s;">
+                <div class="input-card">
+                    <i class="ri-link input-icon"></i>
+                    <input type="url" id="urlInput" placeholder="Drop link here or paste..." spellcheck="false" autocomplete="off">
+                    <button class="btn btn-primary" id="fetchBtn">Fetch</button>
+                </div>
+                
+                <!-- Live Fetch Animation (Hidden default) -->
+                <div class="fetch-loader hidden" id="fetchSpinner">
+                    <div class="spinner"></div>
+                    <span>Fetching video info...</span>
+                </div>
+                <div class="error-msg hidden" id="fetchError"></div>
+            </div>
+
+            <!-- Video Preview Card (Layout: Preview -> Options -> Button) -->
+            <div id="previewArea" class="preview-area hidden">
+                
+                <div class="media-preview-card">
+                    <img id="thumbPreview" class="thumbnail" src="" alt="Thumbnail">
+                    <div class="media-details">
+                        <h3 id="videoTitle">Video Title</h3>
+                        <p id="videoDuration" class="meta-tag hidden"><i class="ri-time-line"></i> <span></span></p>
+                        <p id="playlistMeta" class="meta-tag blue hidden"><i class="ri-play-list-2-line"></i> Playlist</p>
+                    </div>
+                </div>
+
+                <!-- Playlist Selection (Hidden for single video) -->
+                <div id="playlistArea" class="playlist-card hidden">
+                    <div class="playlist-header">
+                        <h3>Select Videos</h3>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="selectAll" checked>
+                            <span class="checkmark"></span>
+                            Select All
+                        </label>
+                    </div>
+                    <ul id="videoList" class="video-list">
+                        <!-- Populated via JS -->
+                    </ul>
+                </div>
+
+                <!-- Options Row -->
+                <div class="options-row">
+                    <div class="setting-group">
+                        <label><i class="ri-file-code-line"></i> Format</label>
+                        <select id="formatSelect">
+                            <option value="Audio">MP3 (Audio)</option>
+                            <option value="Video" selected>MP4 (Video)</option>
+                            <option value="WAV">WAV (Lossless Audio)</option>
+                            <option value="WEBM">WEBM (Video)</option>
+                        </select>
+                    </div>
+                    <div class="setting-group" id="qualityGroup">
+                        <label><i class="ri-hd-line"></i> Quality</label>
+                        <select id="qualitySelect">
+                            <option value="1080p">1080p (Best)</option>
+                            <option value="720p" selected>720p (Good)</option>
+                            <option value="360p">360p (Data Saver)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button id="startDownloadBtn" class="btn btn-action hover-pop">
+                    <i class="ri-download-2-line"></i> Start Download
+                </button>
+            </div>
+        </section>
+
+        <!-- View: ACTIVE DOWNLOADS -->
+        <section id="view-downloads" class="view hidden fade-in">
+            <header class="view-header">
+                <h1>Active Downloads</h1>
+            </header>
+            <div id="activeList" class="cards-list">
+                <div class="empty-state custom-empty" id="activeEmpty">
+                    <i class="ri-inbox-archive-line"></i>
+                    <h3>No active downloads</h3>
+                    <p>Paste a link to start downloading.</p>
+                </div>
+                <!-- Task Cards go here -->
+            </div>
+        </section>
+
+        <!-- Views for Audio, Video, Completed, Failed (Using History format) -->
+        <section id="view-history" class="view hidden fade-in">
+            <header class="view-header">
+                <h1 id="historyTitle">History</h1>
+                <button id="clearHistoryBtn" class="btn btn-ghost"><i class="ri-delete-bin-line"></i> Clear All</button>
+            </header>
+            <div id="historyList" class="cards-list">
+                <div class="empty-state custom-empty" id="historyEmpty">
+                    <i class="ri-history-line"></i>
+                    <h3>It's quiet here...</h3>
+                    <p>No downloads match this category yet.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Audio Element for completion sound -->
+    <audio id="successSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

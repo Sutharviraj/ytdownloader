@@ -1,0 +1,44 @@
+{
+  "auth": {
+    "providers": {
+      "anonymous": true,
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "TubeGrabber",
+        "supportEmail": "newstatupideya@gmail.com"
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": ".",
+      "runtime": "python311",
+      "codebase": "default",
+      "ignore": [
+        "venv",
+        ".git",
+        "firebase-debug.log",
+        "ffmpeg.exe",
+        "ffprobe.exe",
+        "downloads"
+      ]
+    }
+  ],
+  "hosting": {
+    "public": "static",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "function": {
+          "functionId": "ytdownloader",
+          "region": "us-central1"
+        }
+      }
+    ]
+  }
+}

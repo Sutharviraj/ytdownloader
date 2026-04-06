@@ -1,0 +1,6 @@
+ffmpeg.exe
+ffprobe.exe
+downloads/
+__pycache__/
+frontend/.firebase/
+*.pyc

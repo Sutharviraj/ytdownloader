@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeGrabber | Premium Media Extractor</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- CSS with Versioning -->
+    <link rel="stylesheet" href="/static/style.css?v=3.5">
+</head>
+<body>
+    <!-- Immersive Background Objects -->
+    <div class="bg-wrapper">
+        <div class="glow-blob"></div>
+        <div class="glow-blob-2"></div>
+    </div>
+
+    <div id="app" class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar">
+            <div class="app-brand">
+                <span class="logo-text">Tube<span>Grabber</span></span>
+            </div>
+            <nav class="nav-links">
+                <button class="nav-link active" data-tab="home"><i>🏠</i> Home</button>
+                <button class="nav-link" data-tab="downloads"><i>📥</i> Downloads</button>
+                <button class="nav-link" data-tab="playlists"><i>📂</i> Playlists</button>
+                <button class="nav-link" data-tab="about"><i>👤</i> About</button>
+                <button class="nav-link" data-tab="settings"><i>⚙️</i> Settings</button>
+            </nav>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="app-main">
+            <!-- Header with Quick Controls -->
+            <header class="app-header">
+                <div class="search-wrap">
+                    <input type="text" id="headerSearch" placeholder="Search history...">
+                </div>
+                <div class="auth-controls">
+                    <div id="userInfo" class="user-display hidden">
+                        <span id="userEmail"></span>
+                        <button id="logoutBtn" class="pill-outline">Logout</button>
+                    </div>
+                    <button id="loginBtn" class="pill-filled">Login</button>
+                </div>
+            </header>
+
+            <!-- Dynamic Tab Content Area -->
+            <div class="workspace-viewport">
+                
+                <!-- Tab: Home (Core Experience) -->
+                <section id="home-tab" class="tab-pane active">
+                    <div class="hero-box">
+                        <h1>Premium <span class="gradient-text">Media Extractor</span></h1>
+                        <p>High-speed downloads. Zero limits. Ultra quality.</p>
+                    </div>
+
+                    <div class="input-hub animate-up">
+                        <div class="url-input-card">
+                            <input type="text" id="urlInput" placeholder="Paste your link here...">
+                            <button id="pasteBtn" class="action-btn-small">Paste</button>
+                        </div>
+                        <button id="downloadBtn" class="main-cta-btn">Analyze Media</button>
+                    </div>
+
+                    <!-- Progress Status Area -->
+                    <div id="statusContainer" class="status-box hidden">
+                        <div class="status-top">
+                            <span id="statusText">Processing...</span>
+                            <div class="mini-loader"></div>
+                        </div>
+                        <div class="progress-track"><div id="progressFill" class="progress-bar-inner"></div></div>
+                        <div class="status-meta">
+                            <span id="speedText">0 MB/s</span>
+                            <span id="etaText">00:00</span>
+                        </div>
+                    </div>
+
+                    <!-- Success / Completion Card -->
+                    <div id="successContainer" class="success-card hidden card-glass animate-up">
+                        <div class="success-header">
+                            <div class="success-badge">DONE</div>
+                            <div class="success-icon">✨</div>
+                        </div>
+                        <h2>Download Ready!</h2>
+                        <p id="successFileTitle">Your media has been processed and is ready for high-speed retrieval.</p>
+                        <div class="success-actions">
+                            <a id="finalDownloadLink" href="#" class="download-btn-premium" target="_blank">
+                                <i>📥</i> DOWNLOAD NOW
+                            </a>
+                            <button id="restartBtn" class="pill-outline">Download Another</button>
+                        </div>
+                    </div>
+
+                    <!-- Media Explorer (The Preview) -->
+                    <div id="previewContainer" class="media-explorer hidden card-glass">
+                        <div class="media-preview-header">
+                            <img id="videoThumb" src="" alt="">
+                            <div class="media-main-info">
+                                <h3 id="videoTitle">--</h3>
+                                <p id="videoUploader">--</p>
+                            </div>
+                        </div>
+                        <div id="qualitySelection" class="quality-grid"></div>
+                        <div class="format-toggle">
+                            <button class="f-btn active" data-fmt="Video">Video</button>
+                            <button class="f-btn" data-fmt="Audio">Audio</button>
+                        </div>
+                        <button id="confirmDownloadBtn" class="full-btn-premium">Download Now</button>
+                    </div>
+                </section>
+
+                <!-- Tab: Downloads (History) -->
+                <section id="downloads-tab" class="tab-pane">
+                    <div class="data-header">
+                        <h2>Recent Activity</h2>
+                    </div>
+                    <div class="table-card card-glass">
+                        <table id="historyTable">
+                            <thead><tr><th>File</th><th>Date</th><th>Status</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Tab: Playlists -->
+                <section id="playlists-tab" class="tab-pane">
+                    <div class="data-header"><h2>Active Playlists</h2></div>
+                    <div id="playlistContainer" class="list-grid"></div>
+                </section>
+
+                <!-- Tab: Settings -->
+                <section id="settings-tab" class="tab-pane">
+                    <div class="data-header"><h2>Platform Settings</h2></div>
+                    <div class="card-glass settings-group">
+                        <div class="s-item">
+                            <div><label>Auto-Analyze</label><p>Start processing as soon as link is pasted.</p></div>
+                            <input type="checkbox" id="autoCheck" checked>
+                        </div>
+                        <div class="s-item">
+                            <div><label>Audio Fidelity</label><p>Prefer 320kbps for all MP3s.</p></div>
+                            <input type="checkbox" checked>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tab: About -->
+                <section id="about-tab" class="tab-pane">
+                    <div class="about-grid">
+                        <div class="profile-card card-glass">
+                            <div class="avatar-box"><img src="/static/viraj.jpg" alt="Viraj"></div>
+                            <h2>Viraj Suthar</h2>
+                            <p class="role-tag">Full Stack Architect</p>
+                            <a href="https://virajportfolio-eosin.vercel.app/" class="portfolio-link">Explore Work →</a>
+                        </div>
+                        <div class="mission-card card-glass">
+                            <h3>Project Vision</h3>
+                            <p>Building high-performance media tools that bridge the gap between AI and human creativity. Designed for professionals, accessible to all.</p>
+                            <div class="skills-wrap">
+                                <span class="s-tag">Frontend Architecture</span>
+                                <span class="s-tag">Backend Efficiency</span>
+                                <span class="s-tag">UI/UX Design</span>
+                                <span class="s-tag">Python Systems</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Auth Drawer -->
+    <div id="authOverlay" class="drawer-overlay hidden">
+        <div class="auth-panel card-glass animate-up">
+            <button id="closeAuth" class="close-x">×</button>
+            <h2>Join TubeGrabber</h2>
+            <button id="googleLoginBtn" class="btn-google"><i>G</i> Link with Google</button>
+            <div class="form-divider"><span>OR</span></div>
+            <form id="emailLoginForm" class="auth-form">
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit" class="pill-filled">Access Account</button>
+            </form>
+            <button id="guestLoginBtn" class="pill-outline">Continue as Guest</button>
+            <p id="authError" class="err-msg hidden"></p>
+        </div>
+    </div>
+
+    <footer class="system-footer">
+        <span>© 2026 TubeGrabber</span>
+        <div class="status-indicator"><span>●</span> System Latency: 42ms</div>
+    </footer>
+
+    <!-- Firebase SDK & Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyCioxWhLKAONlFlTNtsuSkS-mUenqg1yPk",
+            authDomain: "mp4tomp3-9566c.firebaseapp.com",
+            projectId: "mp4tomp3-9566c",
+            storageBucket: "mp4tomp3-9566c.firebasestorage.app",
+            appId: "1:197027585247:web:3ae56c9eaf7228a65c9d6a"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        window.firebaseAuth = auth;
+        window.firebaseLogin = signInWithEmailAndPassword;
+        window.firebaseSignup = createUserWithEmailAndPassword;
+        window.firebaseLogout = signOut;
+        window.googleProvider = new GoogleAuthProvider();
+        window.signInWithPopup = signInWithPopup;
+        window.signInAnonymously = signInAnonymously;
+    </script>
+    <script src="/static/script.js?v=3.5"></script>
+</body>
+</html>
