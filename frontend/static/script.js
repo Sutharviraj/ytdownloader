@@ -200,20 +200,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = urlInput.value.trim();
         previewContainer.classList.add('hidden');
         statusContainer.classList.remove('hidden');
-        statusText.innerText = "Connecting to high-speed extraction API...";
-        statusText.style.color = "white";
+        statusText.innerText = "Connecting to high-speed server...";
         progressFill.style.width = "10%";
-        speedText.innerText = "Extracting...";
-        etaText.innerText = "Just a moment";
-
-        // Artificial progress simulation since fetching is internal now
-        let simProgress = 10;
-        const progressInt = setInterval(() => {
-            if (simProgress < 90) {
-                simProgress += Math.random() * 8;
-                progressFill.style.width = `${Math.min(90, simProgress)}%`;
-            }
-        }, 800);
 
         try {
             const res = await fetch(`${API_BASE_URL}/api/download`, {
@@ -223,33 +211,51 @@ document.addEventListener('DOMContentLoaded', () => {
                     url, format: currentFormat, format_id: selectedFormatId, title: videoTitle.innerText
                 })
             });
-            clearInterval(progressInt);
-            progressFill.style.width = "100%";
-            
             const data = await res.json();
             if (data.error) throw new Error(data.error);
-            
-            showSuccess({
-                filename: videoTitle.innerText + " (Extracted)",
-                url: data.download_url
-            });
-        } catch (e) {
-            clearInterval(progressInt);
-            statusText.innerText = e.message; 
-            statusText.style.color = "#fb7185"; 
-            progressFill.style.width = "0%";
-            speedText.innerText = "Failed";
-            etaText.innerText = "--:--";
-        }
+            activeTaskId = data.task_id;
+            startPolling();
+        } catch (e) { statusText.innerText = e.message; statusText.style.color = "#fb7185"; }
     };
+
+    function startPolling() {
+        const poll = setInterval(async () => {
+            if (!activeTaskId) { clearInterval(poll); return; }
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/status/${activeTaskId}`);
+                const data = await res.json();
+                
+                progressFill.style.width = `${data.progress}%`;
+                speedText.innerText = data.speed || "Queueing...";
+                etaText.innerText = data.eta || "00:00";
+                
+                if (data.error) throw new Error(data.error);
+                
+                if (data.finished) {
+                    clearInterval(poll);
+                    showSuccess(data);
+                } else {
+                    let msg = data.status_msg;
+                    if (typeof msg === 'object') msg = JSON.stringify(msg);
+                    statusText.innerText = msg;
+                }
+            } catch (e) { 
+                clearInterval(poll); 
+                let msg = e.message;
+                if (msg.includes("confirm you're not a bot")) {
+                    msg = "⚠️ YouTube blocked this request. (Owner Action Required).";
+                }
+                statusText.innerText = msg; 
+                statusText.style.color = "#fb7185";
+            }
+        }, 800);
+    }
 
     function showSuccess(data) {
         statusContainer.classList.add('hidden');
         successContainer.classList.remove('hidden');
-        successFileTitle.innerText = data.filename || "Your media is ready.";
-        finalDownloadLink.href = data.url;
-        // Prompt auto-download via iframe or direct targeting to make it feel seamless
-        finalDownloadLink.setAttribute("target", "_blank"); 
+        successFileTitle.innerText = data.filename || "Your file is ready.";
+        finalDownloadLink.href = `${API_BASE_URL}/api/get_file/${activeTaskId}`;
     }
 
     restartBtn.onclick = () => {
