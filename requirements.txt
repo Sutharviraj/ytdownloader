@@ -1,7 +1,6 @@
 Flask==3.0.2
 flask-cors==4.0.0
 gunicorn==21.2.0
-yt-dlp>=2025.1.15
-imageio-ffmpeg==0.4.9
+requests>=2.31.0
 functions-framework==3.5.0
 firebase-functions>=0.1.0
